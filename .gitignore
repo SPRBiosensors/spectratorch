@@ -129,4 +129,4 @@ MNIST
 *.ckpt
 *.onnx
 
-datasets/
+datasets/pickles/
