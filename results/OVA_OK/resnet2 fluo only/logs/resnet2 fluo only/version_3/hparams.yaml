@@ -1,0 +1,27 @@
+alpha: 0.0
+balance_train: false
+balance_val: false
+batch_size: 300
+bottleneck_size: 0
+data_augmented: true
+early_stop_patience: 300
+five_f_cv: -1
+gpus: 1
+head_depth: 2
+head_width: 512
+inference: true
+inference_only: false
+label_smooth: 0.0
+learning_rate: 0.01
+load_chk: false
+loss_fn: ce
+max_epochs: 150
+model: resnetv2
+normalization: minmax11
+num_layers: 4
+penalized: None
+save_results: false
+scheduler_patience: 0
+seed: 42
+study_name: resnet2 fluo only
+target_codes: OVA_OK
