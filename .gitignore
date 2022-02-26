@@ -128,5 +128,3 @@ MNIST
 # checkpoints, outputs and results
 *.ckpt
 *.onnx
-
-datasets/pickles/
