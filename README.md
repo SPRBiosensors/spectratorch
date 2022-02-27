@@ -30,44 +30,23 @@ Voici un exemple de nom de modèle et comment comprendre les informations proven
 - **eps=0.1**: Le epsilon utilisé pour le data smoothing (mélange des points pour générer des mélanges de différentes classes).
 
 
+## Installation
 
+### Pour GPU:
+- S’assurer que les drivers de la carte graphique soient bien installés.
+- Utiliser le fichier environment-cuda10.2.yml pour l'installation ci-bas.
 
-## Installation sur Linux
+###Pour CPU:
+- Utiliser le fichier environment-cpu-only.yml pour l'installation ci-bas.
 
-- Installer miniconda
-- Écrire dans la console:
-```console
-conda env create environment.yml
-```
-
-
-## Installation sur Windows 10
-
-- Installer miniconda correspondant à l’installation de Windows (64bit ou 32bit). https://docs.conda.io/en/latest/miniconda.html
-  - Note: miniconda est un gestionnaire de librairies Python. Il permet d’installer pytorch-gpu facilement.
-- Ouvrir la console Anaconda en tant qu’administrateur.
-- Écrire dans la console : conda create -n torch python=3.8 anaconda
-- Dans la console : activate torch
-  ###Pour CPU:
-  - Dans la console:
-```console
-conda install pytorch torchvision torchaudio cpuonly -c pytorch
-```
-
-  ### Pour GPU:
-  - S’assurer que les drivers de la carte graphique soient bien installés.
-  - Vérifier quelle est la version des drivers et se référer à cette table pour savoir quelle version de CUDA à installer:
-  - ![](doc/images/cuda_versions.png)
-    - Source: https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html
-  - Écrire dans la console avec LA BONNE VERSION DE CUDA: 
-  - > conda install pytorch torchvision torchaudio cudatoolkit=x.x -c pytorch
-
-  ### Pour GPU ET CPU:
-  - Dans la console:  
-```console
-conda install pandas numpy matplotlib scikit-learn
-cd path/to/spectratorch
-pip install pytorch-lightning seaborn
+### Instructions après avoir choisi le processeur (CPU vs GPU)
+- Télecharger le repository de spectratorch.
+- Installer [miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- Écrire dans la console, **AVEC LE BON FICHIER ENVIRONMENT**:
+```bash
+conda env create environment-?????.yml
+conda activate ml
+cd path/to/spectratorch-repository
 pip install -e .
 ```
 
@@ -122,7 +101,7 @@ Pour les résultats finaux contre le test_split. C’est un argument flag à ajo
 ![](doc/images/example_result.png)
 #### Figure 2: Example de fiche de résultats.
 
-![Voici une explication plus en détail des graphiques générés](doc/RESULTATS.md)
+[Voici une explication plus en détail des graphiques générés](doc/RESULTATS.md)
 
 **Suggestions:**
 - Utiliser des architectures de type VGG donne les meilleurs résultats par rapport au temps investi (VGG16 est très bon).

@@ -149,6 +149,7 @@ class ModelPlot:
                 else:
                     pre, rec, thr = precision_recall_curve(self.binarized_truth[:, cls],
                                                            self.current_preds[:, cls])
+                # This is where we adjust the cutoff!!!
                 self.best_cutoffs[cls] = thr[find_nearest(pre[:-1], 0.98, insurence=rec[:-1])]
 
         ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
