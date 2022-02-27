@@ -5,7 +5,7 @@ Le cadre d’apprentissage automatique ici est PyTorch et peut autant fonctionne
 Il est hautement recommandé de faire l’apprentissage profond avec une carte graphique. 
 Pour l’inférence, c’est moins important et peut être fait sur un ordinateur vieillot avec assez de RAM pour avoir les 
 poids du modèle en mémoire (voir le projet mAPIe).
-Le fichier Jupyter (voir plus bas) démontre les nettoyages effectués aux données reçues et le raisonnement derrière. 
+Le fichier Jupyter ( .ipynb, voir plus bas) démontre les nettoyages effectués aux données reçues et le raisonnement derrière. 
 Il démontre aussi comment convertir les données.
 En trace d’exemples tous mes résultats les plus récents sont présents, comme leurs checkpoints.
 
@@ -56,11 +56,10 @@ Les datasets (celui de 30k echantillons et celui de 300k) sont disponibles sous 
 Toutefois, le processus de nettoyage est disponible et peut être reproduit avec ces instructions:
 
 - Dans la console:
-```console
-conda install jupyter
+```bash
 jupyter-notebook
 ```
-- Suivre les instructions dans le fichier Jupyter: **Exploratory analysis.ipynb**
+- Suivre les instructions dans le fichier Jupyter: **Exploratory analysis and data cleanup.ipynb**
   - Le code avance d’une cellule et cette cellule est executée à chaque fois que *Shift+Enter* est appuyé
   - Le code permet d’étudier les tendances du dataset et ensuite de le convertir au format que spectratorch a besoin.
 
@@ -81,6 +80,14 @@ Il faut changer le nombre de GPU dans train.py du nombre prédéfini à 0. (Lign
 
 Des transformations des données pertinentes aux données de fluorescence et LSPR sont disponibles à être ajoutées comme arguments. Elles sont présentes dans aceri_transforms.py pour voir ce qu’elles fonts.
 
+## Utiliser un modèle partiellement entrainé pour continuer l'entrainement
+Si pour toute raison (un crash, un entrainement avec un (learning rate / lr) trop bas pour arriver à finalité), 
+vous voulez continuer l'entrainement d'un modèle, voici ce qu'il faut faire:
+- Trouve le checkpoint le plus récent du modèle en question (sauvegardé dans le dossier du nom du projet que vous avez donnez à cet entrainement)
+- Mettre ce fichier en référence
+## Exporter le modèle entrainé pour l'utiliser dans mAPIe
+
+[//]: # (todo)
 
 ## Visualisation de l’entrainement / résultats:
 

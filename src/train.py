@@ -15,6 +15,8 @@ from lightningmodule import TrainingModule
 import pickle
 
 
+am_lazy = True
+
 def main(args: Namespace) -> None:
     # fixe le random seed. Doit être fait de manière spécifique dans datamodule
     if args.seed is not None:
@@ -122,15 +124,6 @@ def main(args: Namespace) -> None:
                       input_names=["data_spectra", "data_tabular"],
                       output_names=["-".join(model.labels)])
 
-    """    
-    del dm
-    del model.model
-    del model
-    del trainer
-    torch.cuda.empty_cache()
-    if torch.cuda.max_memory_allocated() != 0:
-        warnings.warn("VRAM leak detected! A tensor somewhere was forgotten...")"""
-
 
 def cli_main():
     # ------------
@@ -185,23 +178,30 @@ def cli_main():
     og_parser = TrainingModule.add_model_specific_args(parent_parser)
     og_parser = AceriDataModule.add_datamodule_specific_args(og_parser)
 
-    old_file = Path(__file__).parents[1] / 'datasets' / "pickles" / "30k_cleaned.pkl"
-    args = og_parser.parse_args(["--arch=ResNetV2"])  # I need to know which architecture first
-    parser = ARCHS[args.arch].add_arch_specific_args(og_parser)  # gets architecture defaults params
-    # override them here if wanted
-    args = parser.parse_args([f"--train_source={str(old_file)}",
-                              f"--project=big_test_resnet1013",
-                              f"--arch=ResNetV2",
-                              f"--n_splits=20",
-                              f"--bs=320",
-                              f"--fit=True",
-                              f"--to_onnx=False",
-                              f"--num_workers=1",
-                              f"--save_test_preds=True"
-                              ])
-    
+    # This is set up so you can just do python train.py out of the box and it works!
+    if am_lazy:
+        """Use this method when you are lazy and don't want to use the command line to start this software."""
+        old_file = Path(__file__).parents[1] / 'datasets' / "pickles" / "30k_cleaned.pkl"
+        args = og_parser.parse_args(["--arch=ResNetV2"])  # I need to know which architecture first
+        parser = ARCHS[args.arch].add_arch_specific_args(og_parser)  # gets architecture defaults params
+        # override them here if wanted
+        args = parser.parse_args([f"--train_source={str(old_file)}",
+                                  f"--project=big_test_resnet1013",
+                                  f"--arch=ResNetV2",
+                                  f"--n_splits=20",
+                                  f"--bs=320",
+                                  f"--fit=True",
+                                  f"--to_onnx=False",
+                                  f"--num_workers=1",
+                                  f"--save_test_preds=True"
+                                  ])
+        args = parser.parse_args()
+    else:
+        # this will parse arguments directly in the command line instead.
+        args = og_parser.parse_args()
 
     main(args)
+
 
 
 if __name__ == '__main__':

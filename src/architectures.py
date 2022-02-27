@@ -17,7 +17,7 @@ from torch import nn
 import torch.nn.functional as F
 
 
-class ArchSkeleton(nn.Module):
+class ArchBaseClass(nn.Module):
     """
     La classe à utiliser pour hériter.
     """
@@ -34,18 +34,28 @@ class ArchSkeleton(nn.Module):
     def add_arch_specific_args(parent_parser):
         parser = ArgumentParser(parents=[parent_parser], add_help=False)
         parser.set_defaults(max_epochs=300)  # already existing from trainer args, so modification only.
-        parser.add_argument("--early_stop_patience", default=100, type=int)
-        parser.add_argument("--scheduler_cooldown", default=0, type=int)
-        parser.add_argument("--scheduler_patience", default=35, type=int)
-        parser.add_argument('--lr', default=1E-3, type=float)
-        parser.add_argument('--bs', default=100, type=int)
+        parser.add_argument("--early_stop_patience", default=100, type=int,
+                            help='Combien de steps le trainer devrait attendre avant de faire un early stop. '
+                                 'Défaut=dépend de larchitecture')
+        parser.add_argument("--scheduler_cooldown", default=0, type=int,
+                            help='Combien de steps le trainer devrait attendre avant de faire un early stop. '
+                                 'Défaut=dépend de larchitecture')
+        parser.add_argument("--scheduler_patience", default=35, type=int,
+                            help='Combien de steps le trainer devrait attendre avant de descendre le learning rate. '
+                                 'Défaut=dépend de larchitecture')
+        parser.add_argument('--lr', default=1E-3, type=float,
+                            help='Learning rate de départ. Défaut=dépend de larchitecture')
+        parser.add_argument('--bs', default=100, type=int,
+                            help='Combien déchantillon par batch pour chaque step. '
+                                 'Cest bien de prendre le plus gros bs possible qui rentre dans la mémoire de lordinateur. '
+                                 'Est limité par la mémoire (cpu) ou VRAM (GPU).')
         return parser
 
 
 # Everything VGG related here
 # ----------------------------------------------------------------------------------
 
-class VGG(ArchSkeleton):
+class VGG(ArchBaseClass):
     """
     Classe squelette pour les différents VGG possible. La tête du modèle est prédéfinie ici.
     """
@@ -72,7 +82,7 @@ class VGG(ArchSkeleton):
 
     @staticmethod
     def add_arch_specific_args(parent_parser):
-        parser = ArchSkeleton.add_arch_specific_args(parent_parser)
+        parser = ArchBaseClass.add_arch_specific_args(parent_parser)
         parser = ArgumentParser(parents=[parser], add_help=False)
         parser.set_defaults(max_epochs=250,
                             scheduler_patience=35,
@@ -218,7 +228,7 @@ class PreActBottleneck(nn.Module):
         return out + residual
 
 
-class ResNetV2(ArchSkeleton):  # actual class to call
+class ResNetV2(ArchBaseClass):  # actual class to call
     """
     Version de ResnetV2 venant du github de https://github.com/google-research/big_transfer
 
@@ -305,7 +315,7 @@ class ResNetV2(ArchSkeleton):  # actual class to call
 
     @staticmethod
     def add_arch_specific_args(parent_parser):
-        parser = ArchSkeleton.add_arch_specific_args(parent_parser)
+        parser = ArchBaseClass.add_arch_specific_args(parent_parser)
         parser = ArgumentParser(parents=[parser], add_help=False)
         # already existing from trainer args, so modification only.
         parser.set_defaults(max_epochs=200,
@@ -315,8 +325,23 @@ class ResNetV2(ArchSkeleton):  # actual class to call
                             )
         # those 3 options are optimized to max memory on a  NVIDIA GTX 1080 and floating point precision (fp) of 16
         # parser.add_argument('--bs', default=740, type=int)
-        parser.add_argument("--block_units", default="3_4_6_3", type=str) #todo
-        parser.add_argument("--wf", default=1, type=int, choices=[1, 2, 3])
+        parser.add_argument("--block_units", default="3_4_6_3", type=str,
+                            help="""
+                            Spécifique à larchitecture ResNet. '
+                            Voici les block_units size utilisé et le width_factor par Google:
+                            BiT-M-R50x1, [3, 4, 6, 3], 1
+                            BiT-M-R50x3, [3, 4, 6, 3], 3
+                            BiT-M-R101x1, [3, 4, 23, 3], 1
+                            BiT-M-R101x3, [3, 4, 23, 3], 3
+                            BiT-M-R152x2, [3, 8, 36, 3], 2
+                            BiT-M-R152x4, [3, 8, 36, 3], 4
+                            BiT-S-R50x1, [3, 4, 6, 3], 1
+                            BiT-S-R50x3, [3, 4, 6, 3], 3
+                            BiT-S-R101x1, [3, 4, 23, 3], 1
+                            BiT-S-R101x3, [3, 4, 23, 3], 3
+                            BiT-S-R152x2, [3, 8, 36, 3], 2
+                            BiT-S-R152x4, [3, 8, 36, 3], 4""")
+        parser.add_argument("--wf", default=1, type=int, choices=[1, 2, 3], help='Voir block_units')
         return parser
 
 
