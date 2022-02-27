@@ -185,8 +185,7 @@ def cli_main():
     og_parser = TrainingModule.add_model_specific_args(parent_parser)
     og_parser = AceriDataModule.add_datamodule_specific_args(og_parser)
 
-    old_file = Path(__file__).parents[1] / 'datasets' / "30k_cleaned.pkl"
-    chk = Path(r"D:\Prog\Projects\aCeriNN\project\results\big_test3") / "ResNetV2 y=['OVA', 'OK'] c=('277', '380', '425') t=('da',) 0-20 s=42 eps=0.0_val_loss=3.696E-01_val_f1=0.8394_val_acc=0.8394.ckpt"
+    old_file = Path(__file__).parents[1] / 'datasets' / "pickles" / "30k_cleaned.pkl"
     args = og_parser.parse_args(["--arch=ResNetV2"])  # I need to know which architecture first
     parser = ARCHS[args.arch].add_arch_specific_args(og_parser)  # gets architecture defaults params
     # override them here if wanted
@@ -194,8 +193,6 @@ def cli_main():
                               f"--project=big_test_resnet1013",
                               f"--arch=ResNetV2",
                               f"--n_splits=20",
-                              f"--wf=1",
-                              f"--block_units=3_4_23_3",
                               f"--bs=320",
                               f"--fit=True",
                               f"--to_onnx=False",
